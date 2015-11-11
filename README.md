@@ -1,6 +1,6 @@
-# Cadastro de Alunos do LEMA
+# Framework MVC caseiro e um pequeno CRUD demo
 
-Trabalho de Programação Orientada a Objetos - UEZO
+Trabalho de Programação Orientada a Objetos 2 - UEZO
 
 #Alunos:
 
