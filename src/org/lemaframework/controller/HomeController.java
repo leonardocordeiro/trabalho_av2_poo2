@@ -5,7 +5,7 @@ import org.lemaframework.web.annotation.URI;
 public class HomeController {
 	
 	@URI("home")
-	public void leo() { 
+	public void heyyyy() { 
 		System.out.println("teste!");
 	}
 	
