@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.lemaframework.web.annotation.URI;
 import org.lemaframework.web.infra.HandleMapping;
+import org.lemaframework.web.infra.exception.RequestMappingNotFoundException;
 import org.lemaframework.web.model.ActionDefination;
 
 public class FrontControllerServlet extends HttpServlet {
@@ -21,26 +22,24 @@ public class FrontControllerServlet extends HttpServlet {
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) {
-
-		String uriDaRequisicao = request.getRequestURI();
-		uriDaRequisicao = uriDaRequisicao.substring(uriDaRequisicao.lastIndexOf("/") + 1);
-
-		ActionDefination actionDefination = HandleMapping.uris.get(uriDaRequisicao);
-		
-		Class<?> klass = actionDefination.getController();
-		Object controller;
 		try {
-			controller = klass.newInstance();
+			String requestUri = request.getRequestURI();
+			requestUri = requestUri.substring(requestUri.lastIndexOf("/") + 1);
+			
+			ActionDefination actionDefination = HandleMapping.uris.get(requestUri);
+			
+			if(actionDefination == null)
+				throw new RequestMappingNotFoundException();
+			
+			Class<?> klass = actionDefination.getController();
+			Object controller = klass.newInstance();
+			
+			Method method = klass.getMethod(actionDefination.getMethodName());
+			method.invoke(controller);
 		} catch(Exception e) { 
 			throw new RuntimeException(e);
 		}
 		
-		try {
-			Method method = klass.getMethod(actionDefination.getMethodName());
-			method.invoke(controller);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	@Override
