@@ -3,11 +3,8 @@ package org.lemaframework.web.servlet;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -20,9 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.lemaframework.web.annotation.URI;
 import org.lemaframework.web.infra.HandleMapping;
 import org.lemaframework.web.infra.exception.RequestMappingNotFoundException;
+import org.lemaframework.web.infra.param.ParameterResolver;
 import org.lemaframework.web.model.ActionDefination;
-
-import teste.Usuario;
+import org.lemaframework.web.model.RequestModelAndView;
 
 public class FrontControllerServlet extends HttpServlet {
 
@@ -44,33 +41,22 @@ public class FrontControllerServlet extends HttpServlet {
 			
 			Method method = actionDefination.getMethod();
 			
-			Parameter modelParameter = method.getParameters()[0]; 
+			List<Object> paramObjects = new ParameterResolver().resolve(request, method);
+			RequestModelAndView requestModel = (RequestModelAndView) method.invoke(controller, paramObjects.toArray());
 			
-			Object model = null;
-			if(modelParameter != null) {
-				Class<?> metaModel = modelParameter.getType();
-				
-				model = metaModel.newInstance();
-				
-				for(Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
-					String key = entry.getKey();
-					String value = entry.getValue()[0];
-					
-					Method modelMethod = model.getClass().getDeclaredMethod("set" + key, String.class);
-					modelMethod.invoke(model, value);
-					
+			if(requestModel.getModelMap() != null) { 
+				for(Entry<String, Object> entry : requestModel.getModelMap().entrySet()) { 
+					request.setAttribute(entry.getKey(), entry.getValue());
 				}
 			}
 			
-			String methodReturn = (String) method.invoke(controller, model);
-			
 			String to = null;
-			if(methodReturn != null && methodReturn.contains("redirect:")) {
-				to = methodReturn.substring(methodReturn.indexOf(":") + 1);
+			if(requestModel != null && requestModel.getViewName().contains("redirect:")) {
+				to = requestModel.getViewName().substring(requestModel.getViewName().indexOf(":") + 1);
 				
 				response.sendRedirect(to);
 			} else {
-				to = methodReturn;
+				to = requestModel.getViewName();
 				
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/" + to + ".jsp");
 				dispatcher.forward(request, response);
@@ -81,6 +67,8 @@ public class FrontControllerServlet extends HttpServlet {
 		}
 		
 	}
+
+	
 
 	@Override
 	public void init() throws ServletException {
