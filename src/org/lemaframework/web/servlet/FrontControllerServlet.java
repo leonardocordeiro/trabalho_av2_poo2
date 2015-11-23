@@ -41,6 +41,7 @@ public class FrontControllerServlet extends HttpServlet {
 			
 			Method method = actionDefination.getMethod();
 			
+			// tirar lista 
 			List<Object> paramObjects = new ParameterResolver().resolve(request, method);
 			RequestModelAndView requestModel = (RequestModelAndView) method.invoke(controller, paramObjects.toArray());
 			
