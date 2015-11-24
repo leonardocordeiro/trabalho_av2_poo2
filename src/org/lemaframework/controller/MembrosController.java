@@ -11,7 +11,7 @@ import org.lemaframework.web.model.dao.MembroDao;
 
 public class MembrosController {
 
-	private MembroDao membroDao = new MembroDao();
+	private final MembroDao membroDao = new MembroDao();
 	
 	@URI("membros")
 	public RequestModelAndView list() {

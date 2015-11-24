@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.lemaframework.web.annotation.PathVariable;
 
-public class PathParameter implements ParameterResolverCommand {
+public class PathParameterResolver implements ParameterResolverCommand {
 
 	private ParameterResolverCommand proximo;
 

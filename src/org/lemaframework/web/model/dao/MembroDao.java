@@ -14,8 +14,7 @@ public class MembroDao {
 	
 	public void inserir(Membro membro) { 
 		String sql = "insert into Membro (nome, email) values (?, ?)";
-		try {
-			Connection connection = new ConnectionFactory().getConnection();
+		try(Connection connection = new ConnectionFactory().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			
 			ps.setString(1, membro.getNome());
@@ -23,8 +22,6 @@ public class MembroDao {
 			
 			ps.execute();
 			
-			connection.close();
-		
 		} catch(SQLException e) { 
 			throw new RuntimeException(e);
 		}
@@ -32,15 +29,12 @@ public class MembroDao {
 	
 	public void remover(Membro membro) {
 		String sql = "delete from Membro where id = ?";
-		try {
-			Connection connection = new ConnectionFactory().getConnection();
+		try(Connection connection = new ConnectionFactory().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setLong(1, membro.getId());
 			
 			ps.execute();
 			
-			connection.close();
-		
 		} catch(SQLException e) { 
 			throw new RuntimeException(e);
 		}
@@ -49,8 +43,7 @@ public class MembroDao {
 
 	public void atualiza(Membro membro) { 
 		String sql = "update Membro set nome = ?, email = ? where id = ?";
-		try {
-			Connection connection = new ConnectionFactory().getConnection();
+		try(Connection connection = new ConnectionFactory().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			
 			ps.setString(1, membro.getNome());
@@ -59,8 +52,6 @@ public class MembroDao {
 			
 			ps.execute();
 			
-			connection.close();
-		
 		} catch(SQLException e) { 
 			throw new RuntimeException(e);
 		}
@@ -70,8 +61,7 @@ public class MembroDao {
 		String sql = "select * from Membro";
 		List<Membro> membros = new ArrayList<Membro>();
 		
-		try {
-			Connection connection = new ConnectionFactory().getConnection();
+		try(Connection connection = new ConnectionFactory().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			
 			ResultSet resultSet = ps.executeQuery();
@@ -84,9 +74,7 @@ public class MembroDao {
 				
 				membros.add(membro);
 			}
-			
-			connection.close();
-			
+			resultSet.close();
 			return membros;
 		
 		} catch(SQLException e) { 
@@ -97,8 +85,7 @@ public class MembroDao {
 	public Membro buscarPor(int id) { 
 		String sql = "select * from Membro where id = ?";
 		
-		try {
-			Connection connection = new ConnectionFactory().getConnection();
+		try (Connection connection = new ConnectionFactory().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setLong(1, id);
 			
@@ -113,9 +100,7 @@ public class MembroDao {
 				return membro;
 				
 			}
-			
-			connection.close();
-			
+			resultSet.close();
 			return null;
 		
 		} catch(SQLException e) { 

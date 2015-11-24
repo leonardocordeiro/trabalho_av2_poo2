@@ -11,7 +11,7 @@ import org.lemaframework.web.model.dao.CompetenciaDao;
 
 public class CompetenciaController {
 	
-	private CompetenciaDao competenciaDao = new CompetenciaDao();
+	private final CompetenciaDao competenciaDao = new CompetenciaDao();
 	
 	@URI("competencias")
 	public RequestModelAndView list() {

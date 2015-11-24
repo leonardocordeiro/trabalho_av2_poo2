@@ -10,9 +10,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.lemaframework.web.infra.param.command.ModelParameter;
-import org.lemaframework.web.infra.param.command.NullResolver;
-import org.lemaframework.web.infra.param.command.PathParameter;
+import org.lemaframework.web.infra.param.command.ModelParameterResolver;
+import org.lemaframework.web.infra.param.command.LastResolver;
+import org.lemaframework.web.infra.param.command.PathParameterResolver;
 
 
 public class ParameterResolverChain {
@@ -27,17 +27,15 @@ public class ParameterResolverChain {
 		
 		Map<String, String[]> parameterMap = request.getParameterMap();
 		
-		List<Object> params = resolve(parameters, parameterMap);
-		return params;
-
+		return resolve(parameters, parameterMap);
 	}
 
 	private List<Object> resolve(Parameter[] params, Map<String, String[]> requestMapParams) {
-		PathParameter pathParamater = new PathParameter();
-		ModelParameter modelParameter = new ModelParameter();
+		PathParameterResolver pathParamater = new PathParameterResolver();
+		ModelParameterResolver modelParameter = new ModelParameterResolver();
 		
 		pathParamater.setProximo(modelParameter);
-		modelParameter.setProximo(new NullResolver());
+		modelParameter.setProximo(new LastResolver());
 		
 		List<Object> parameterObjects = new ArrayList<Object>();
 		pathParamater.resolve(parameterObjects, params, requestMapParams);

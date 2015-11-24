@@ -6,6 +6,7 @@ import java.lang.reflect.Parameter;
 import java.text.DecimalFormat;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -14,7 +15,7 @@ import org.lemaframework.web.annotation.Model;
 import org.lemaframework.web.infra.param.FirstLetterUpperCaseUtil;
 import org.lemaframework.web.infra.param.model.Property;
 
-public class ModelParameter implements ParameterResolverCommand {
+public class ModelParameterResolver implements ParameterResolverCommand {
 
 	private ParameterResolverCommand proximo;
 

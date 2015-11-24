@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class RequestModelAndView {
 
-	private String viewName;
-	private Map<String, Object> models = new HashMap<>();
+	private final String viewName;
+	private final Map<String, Object> models = new HashMap<>();
 
 	public RequestModelAndView(String viewName) {
 		this.viewName = viewName;

@@ -11,36 +11,30 @@ import org.lemaframework.web.infra.ConnectionFactory;
 import org.lemaframework.web.model.Competencia;
 
 public class CompetenciaDao {
-	
 
 	public void inserir(Competencia competencia) { 
 		String sql = "insert into Competencia (nome) values (?)";
-		try {
-			Connection connection = new ConnectionFactory().getConnection();
+		
+		try(Connection connection = new ConnectionFactory().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			
 			ps.setString(1, competencia.getNome());
-			
 			ps.execute();
 			
-			connection.close();
-		
 		} catch(SQLException e) { 
 			throw new RuntimeException(e);
-		}
+		} 
+		
 	}
 	
 	public void remover(Competencia competencia) {
 		String sql = "delete from Competencia where id = ?";
-		try {
-			Connection connection = new ConnectionFactory().getConnection();
+		try(Connection connection = new ConnectionFactory().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement(sql);
-			ps.setLong(1, competencia.getId());
 			
+			ps.setLong(1, competencia.getId());
 			ps.execute();
 			
-			connection.close();
-		
 		} catch(SQLException e) { 
 			throw new RuntimeException(e);
 		}
@@ -49,8 +43,7 @@ public class CompetenciaDao {
 
 	public void atualiza(Competencia competencia) { 
 		String sql = "update Competencia set nome = ? where id = ?";
-		try {
-			Connection connection = new ConnectionFactory().getConnection();
+		try(Connection connection = new ConnectionFactory().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			
 			ps.setString(1, competencia.getNome());
@@ -58,8 +51,6 @@ public class CompetenciaDao {
 			
 			ps.execute();
 			
-			connection.close();
-		
 		} catch(SQLException e) { 
 			throw new RuntimeException(e);
 		}
@@ -69,8 +60,7 @@ public class CompetenciaDao {
 		String sql = "select * from Competencia";
 		List<Competencia> competencias = new ArrayList<Competencia>();
 		
-		try {
-			Connection connection = new ConnectionFactory().getConnection();
+		try(Connection connection = new ConnectionFactory().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			
 			ResultSet resultSet = ps.executeQuery();
@@ -82,9 +72,7 @@ public class CompetenciaDao {
 				
 				competencias.add(competencia);
 			}
-			
-			connection.close();
-			
+			resultSet.close();			
 			return competencias;
 		
 		} catch(SQLException e) { 
@@ -95,8 +83,7 @@ public class CompetenciaDao {
 	public Competencia buscarPor(int id) { 
 		String sql = "select * from Competencia where id = ?";
 		
-		try {
-			Connection connection = new ConnectionFactory().getConnection();
+		try(Connection connection = new ConnectionFactory().getConnection()) {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			
 			ps.setInt(1, id);
@@ -110,11 +97,8 @@ public class CompetenciaDao {
 				
 				return competencia;
 			}
-			
-			connection.close();
-			
+			resultSet.close();
 			return null;
-			
 			
 		} catch(SQLException e) { 
 			throw new RuntimeException(e);
