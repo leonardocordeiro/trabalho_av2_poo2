@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.lemaframework.web.annotation.URI;
 import org.lemaframework.web.infra.HandleMapping;
 import org.lemaframework.web.infra.exception.RequestMappingNotFoundException;
-import org.lemaframework.web.infra.param.ParameterResolver;
+import org.lemaframework.web.infra.param.ParameterResolverChain;
 import org.lemaframework.web.model.ActionDefination;
 import org.lemaframework.web.model.RequestModelAndView;
 
@@ -29,7 +29,9 @@ public class FrontControllerServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			String requestUri = request.getRequestURI();
-			requestUri = requestUri.substring(requestUri.lastIndexOf("/") + 1);
+			
+			String contextName = request.getServletContext().getContextPath();
+			requestUri = requestUri.substring(contextName.indexOf(contextName) + contextName.length() + 1);
 			
 			ActionDefination actionDefination = HandleMapping.uris.get(requestUri);
 			
@@ -42,7 +44,7 @@ public class FrontControllerServlet extends HttpServlet {
 			Method method = actionDefination.getMethod();
 			
 			// tirar lista 
-			List<Object> paramObjects = new ParameterResolver().resolve(request, method);
+			List<Object> paramObjects = new ParameterResolverChain().resolve(request, method);
 			RequestModelAndView requestModel = (RequestModelAndView) method.invoke(controller, paramObjects.toArray());
 			
 			if(requestModel.getModelMap() != null) { 
@@ -96,7 +98,6 @@ public class FrontControllerServlet extends HttpServlet {
 					
 					URI uri = method.getAnnotationsByType(URI.class)[0];
 					String key = uri.value();
-					
 					HandleMapping.uris.put(key, defination);
 					
 				}
